@@ -3,7 +3,7 @@ package model;
 import java.util.*;
 import java.util.stream.*;
 
-public class TodoDaoImplWithList {
+public class TodoDaoImplWithList implements TodoDao{
 
     private final List<Todo> DATA = new ArrayList<>();
 
