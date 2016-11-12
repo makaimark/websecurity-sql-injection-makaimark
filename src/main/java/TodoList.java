@@ -10,6 +10,8 @@ import static spark.Spark.*;
  */
 public class TodoList {
 
+    private static TodoDaoImplWithList todoDao = new TodoDaoImplWithList();
+
     public static void main(String[] args) {
 
         exception(Exception.class, (e, req, res) -> e.printStackTrace()); // print all exceptions
@@ -19,12 +21,12 @@ public class TodoList {
         get("/",                        (req, res)      -> renderTodos(req));
         get("/todos/:id/edit",          (req, res)      -> renderEditTodo(req));
 
-        post("/todos",                  (ICRoute) (req) -> TodoDaoImplWithList.add(Todo.create(req.queryParams("todo-title"))));
-        delete("/todos/completed",      (ICRoute) (req) -> TodoDaoImplWithList.removeCompleted());
-        delete("/todos/:id",            (ICRoute) (req) -> TodoDaoImplWithList.remove(req.params("id")));
-        put("/todos/toggle_status",     (ICRoute) (req) -> TodoDaoImplWithList.toggleAll(req.queryParams("toggle-all") != null));
-        put("/todos/:id",               (ICRoute) (req) -> TodoDaoImplWithList.update(req.params("id"), req.queryParams("todo-title")));
-        put("/todos/:id/toggle_status", (ICRoute) (req) -> TodoDaoImplWithList.toggleStatus(req.params("id")));
+        post("/todos",                  (ICRoute) (req) -> todoDao.add(Todo.create(req.queryParams("todo-title"))));
+        delete("/todos/completed",      (ICRoute) (req) -> todoDao.removeCompleted());
+        delete("/todos/:id",            (ICRoute) (req) -> todoDao.remove(req.params("id")));
+        put("/todos/toggle_status",     (ICRoute) (req) -> todoDao.toggleAll(req.queryParams("toggle-all") != null));
+        put("/todos/:id",               (ICRoute) (req) -> todoDao.update(req.params("id"), req.queryParams("todo-title")));
+        put("/todos/:id/toggle_status", (ICRoute) (req) -> todoDao.toggleStatus(req.params("id")));
 
         after((req, res) -> {
             if (res.body() == null) { // if we didn't try to return a rendered response
@@ -35,17 +37,17 @@ public class TodoList {
     }
 
     private static String renderEditTodo(Request req) {
-        return renderTemplate("velocity/editTodo.vm", new HashMap(){{ put("todo", TodoDaoImplWithList.find(req.params("id"))); }});
+        return renderTemplate("velocity/editTodo.vm", new HashMap(){{ put("todo", todoDao.find(req.params("id"))); }});
     }
 
     private static String renderTodos(Request req) {
         String statusStr = req.queryParams("status");
         Map<String, Object> model = new HashMap<>();
-        model.put("todos", TodoDaoImplWithList.ofStatus(statusStr));
+        model.put("todos", todoDao.ofStatus(statusStr));
         model.put("filter", Optional.ofNullable(statusStr).orElse(""));
-        model.put("activeCount", TodoDaoImplWithList.ofStatus(Status.ACTIVE).size());
-        model.put("anyCompleteTodos", TodoDaoImplWithList.ofStatus(Status.COMPLETE).size() > 0);
-        model.put("allComplete", TodoDaoImplWithList.all().size() == TodoDaoImplWithList.ofStatus(Status.COMPLETE).size());
+        model.put("activeCount", todoDao.ofStatus(Status.ACTIVE).size());
+        model.put("anyCompleteTodos", todoDao.ofStatus(Status.COMPLETE).size() > 0);
+        model.put("allComplete", todoDao.all().size() == todoDao.ofStatus(Status.COMPLETE).size());
         model.put("status", Optional.ofNullable(statusStr).orElse(""));
         if ("true".equals(req.queryParams("ic-request"))) {
             return renderTemplate("velocity/todoList.vm", model);
