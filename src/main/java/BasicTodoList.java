@@ -21,37 +21,37 @@ public class BasicTodoList {
 
         // Add new
         post("/todos", (req, res) -> {
-            TodoDao.add(Todo.create(req.queryParams("todo-title")));
+            TodoDaoImplWithList.add(Todo.create(req.queryParams("todo-title")));
             return renderTodos(req);
         });
 
         // Remove all completed
         delete("/todos/completed", (req, res) -> {
-            TodoDao.removeCompleted();
+            TodoDaoImplWithList.removeCompleted();
             return renderTodos(req);
         });
 
         // Toggle all status
         put("/todos/toggle_status", (req, res) -> {
-            TodoDao.toggleAll(req.queryParams("toggle-all") != null);
+            TodoDaoImplWithList.toggleAll(req.queryParams("toggle-all") != null);
             return renderTodos(req);
         });
 
         // Remove by id
         delete("/todos/:id", (req, res) -> {
-            TodoDao.remove(req.params("id"));
+            TodoDaoImplWithList.remove(req.params("id"));
             return renderTodos(req);
         });
 
         // Update by id
         put("/todos/:id", (req, res) -> {
-            TodoDao.update(req.params("id"), req.queryParams("todo-title"));
+            TodoDaoImplWithList.update(req.params("id"), req.queryParams("todo-title"));
             return renderTodos(req);
         });
 
         // Toggle status by id
         put("/todos/:id/toggle_status", (req, res) -> {
-            TodoDao.toggleStatus(req.params("id"));
+            TodoDaoImplWithList.toggleStatus(req.params("id"));
             return renderTodos(req);
         });
 
@@ -61,17 +61,17 @@ public class BasicTodoList {
     }
 
     private static String renderEditTodo(Request req) {
-        return renderTemplate("velocity/editTodo.vm", new HashMap(){{ put("todo", TodoDao.find(req.params("id"))); }});
+        return renderTemplate("velocity/editTodo.vm", new HashMap(){{ put("todo", TodoDaoImplWithList.find(req.params("id"))); }});
     }
 
     private static String renderTodos(Request req) {
         String statusStr = req.queryParams("status");
         Map<String, Object> model = new HashMap<>();
-        model.put("todos", TodoDao.ofStatus(statusStr));
+        model.put("todos", TodoDaoImplWithList.ofStatus(statusStr));
         model.put("filter", Optional.ofNullable(statusStr).orElse(""));
-        model.put("activeCount", TodoDao.ofStatus(Status.ACTIVE).size());
-        model.put("anyCompleteTodos", TodoDao.ofStatus(Status.COMPLETE).size() > 0);
-        model.put("allComplete", TodoDao.all().size() == TodoDao.ofStatus(Status.COMPLETE).size());
+        model.put("activeCount", TodoDaoImplWithList.ofStatus(Status.ACTIVE).size());
+        model.put("anyCompleteTodos", TodoDaoImplWithList.ofStatus(Status.COMPLETE).size() > 0);
+        model.put("allComplete", TodoDaoImplWithList.all().size() == TodoDaoImplWithList.ofStatus(Status.COMPLETE).size());
         model.put("status", Optional.ofNullable(statusStr).orElse(""));
         if ("true".equals(req.queryParams("ic-request"))) {
             return renderTemplate("velocity/todoList.vm", model);

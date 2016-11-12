@@ -3,7 +3,7 @@ package model;
 import java.util.*;
 import java.util.stream.*;
 
-public class TodoDao {
+public class TodoDaoImplWithList {
 
     private static final List<Todo> DATA = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class TodoDao {
     }
 
     public static void removeCompleted() {
-        ofStatus(Status.COMPLETE).forEach(t -> TodoDao.remove(t.getId()));
+        ofStatus(Status.COMPLETE).forEach(t -> TodoDaoImplWithList.remove(t.getId()));
     }
 
     public static void toggleStatus(String id) {
@@ -40,7 +40,7 @@ public class TodoDao {
     }
 
     public static void toggleAll(boolean complete) {
-        TodoDao.all().forEach(t -> t.setStatus(complete ? Status.COMPLETE : Status.ACTIVE));
+        TodoDaoImplWithList.all().forEach(t -> t.setStatus(complete ? Status.COMPLETE : Status.ACTIVE));
     }
 
     public static List<Todo> all() {
