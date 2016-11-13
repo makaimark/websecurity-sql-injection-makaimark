@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,7 +82,27 @@ public class TodoDaoImplWithJdbc implements TodoDao {
 
     @Override
     public List<Todo> all() {
-        return null;
+        String query = "SELECT * FROM todos;";
+
+        List<Todo> resultList = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             Statement statement =connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query);
+        ){
+            while (resultSet.next()){
+                Todo actTodo = new Todo(resultSet.getString("title"),
+                        resultSet.getString("id"),
+                        Status.valueOf(resultSet.getString("status")));
+                resultList.add(actTodo);
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return resultList;
     }
 
     public void deleteAll() {

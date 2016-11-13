@@ -56,6 +56,20 @@ public class TodoDaoImplWithJdbcTest {
         assertNull(dao.find(secondTodo.id));
     }
 
+    @org.junit.Test
+    public void all_shoudReturnAllTodos() throws Exception {
+        Todo firstTodo = Todo.create("first");
+        Todo secondTodo = Todo.create("second");
+        dao.add(firstTodo);
+        dao.add(secondTodo);
+
+        List<Todo> todos = dao.all();
+
+        assertEquals(2, todos.size());
+        assertTrue(todos.contains(firstTodo));
+        assertTrue(todos.contains(secondTodo));
+    }
+
 
 
 }
