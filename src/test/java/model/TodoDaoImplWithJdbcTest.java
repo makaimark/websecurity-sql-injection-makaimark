@@ -1,6 +1,7 @@
 package model;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -150,7 +151,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(1, dao.all().size());
     }
 
-    @org.junit.Test
+    @Test
     public void ofStatusStatus_active_shouldReturnActive() throws Exception {
         dao.add(activeTodo);
 
@@ -160,7 +161,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(activeTodo.title, activeTodoList.get(0).title);
     }
 
-    @org.junit.Test
+    @Test
     public void ofStatusStatus_active_shouldLeaveOutCompleted() throws Exception {
         dao.add(completedTodo);
 
@@ -169,7 +170,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(0, activeTodoList.size());
     }
 
-    @org.junit.Test
+    @Test
     public void ofStatusStatus_complete_shouldReturnComplete() throws Exception {
         dao.add(completedTodo);
 
@@ -179,7 +180,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(completedTodo.title, completedTodoList.get(0).title);
     }
 
-    @org.junit.Test
+    @Test
     public void ofStatusStatus_complete_shouldLeaveOutActive() throws Exception {
         dao.add(activeTodo);
 
@@ -187,6 +188,74 @@ public class TodoDaoImplWithJdbcTest {
 
         assertEquals(0, completedTodoList.size());
     }
+
+    // Hehe, cannot call with 'null',
+    // as compiled cannot decide which ofStatus.
+    // Left here only for documentation purpose.
+    @Ignore
+    @Test
+    public void ofStatusString_whenGetsNull_heheCannotCallWithNull() throws Exception {
+    }
+
+    @Test
+    public void ofStatusString_whenGetsEmptyString_shouldReturnAll() throws Exception {
+        dao.add(activeTodo);
+        dao.add(completedTodo);
+
+        List<Todo> todoList = dao.ofStatus("");
+
+        assertEquals(2, todoList.size());
+    }
+
+    @Test
+    public void ofStatusString_active_shouldReturnActive() throws Exception {
+        dao.add(activeTodo);
+
+        List<Todo> activeTodoList = dao.ofStatus(Status.ACTIVE.toString());
+
+        assertEquals(1, activeTodoList.size());
+        assertEquals(activeTodo.title, activeTodoList.get(0).title);
+    }
+
+    @Test
+    public void ofStatusString_active_shouldLeaveOutCompleted() throws Exception {
+        dao.add(completedTodo);
+
+        List<Todo> activeTodoList = dao.ofStatus(Status.ACTIVE.toString());
+
+        assertEquals(0, activeTodoList.size());
+    }
+
+    @Test
+    public void ofStatusString_complete_shouldReturnComplete() throws Exception {
+        dao.add(completedTodo);
+
+        List<Todo> completedTodoList = dao.ofStatus(Status.COMPLETE.toString());
+
+        assertEquals(1, completedTodoList.size());
+        assertEquals(completedTodo.title, completedTodoList.get(0).title);
+    }
+
+    @Test
+    public void ofStatusString_complete_shouldLeaveOutActive() throws Exception {
+        dao.add(activeTodo);
+
+        List<Todo> completedTodoList = dao.ofStatus(Status.COMPLETE.toString());
+
+        assertEquals(0, completedTodoList.size());
+    }
+
+    @Test
+    public void ofStatusString_shouldWorkWithLowerCaseOrMixedString() throws Exception {
+        dao.add(activeTodo);
+
+        List<Todo> activeTodoList = dao.ofStatus("actiVe");
+
+        assertEquals(1, activeTodoList.size());
+        assertEquals(activeTodo.title, activeTodoList.get(0).title);
+    }
+
+
 
 
 }

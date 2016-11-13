@@ -53,7 +53,8 @@ public class TodoDaoImplWithJdbc implements TodoDao {
 
     @Override
     public List<Todo> ofStatus(String statusString) {
-        return null;
+        return (statusString == null || statusString.isEmpty()) ?
+                all() : ofStatus(Status.valueOf(statusString.toUpperCase()));
     }
 
     @Override
