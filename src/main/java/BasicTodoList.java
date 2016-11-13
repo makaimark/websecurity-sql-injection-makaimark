@@ -10,7 +10,7 @@ import static spark.Spark.*;
  */
 public class BasicTodoList {
 
-    private static TodoDao todoDao = new TodoDaoImplWithList();
+    private static TodoDao todoDao = new TodoDaoImplWithJdbc();
     
     public static void main(String[] args) {
 
