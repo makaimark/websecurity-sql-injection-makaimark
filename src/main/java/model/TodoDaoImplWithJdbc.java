@@ -1,20 +1,48 @@
 package model;
 
+import java.sql.*;
 import java.util.List;
 
 /**
  * Created by ani on 2016.11.13..
  */
 public class TodoDaoImplWithJdbc implements TodoDao {
+
+    private static final String DATABASE = "jdbc:postgresql://localhost:5432/todolist";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "postgres";
+
     @Override
     public void add(Todo todo) {
-        
+        String query = "INSERT INTO todos (title, id, status) " +
+                "VALUES ('" + todo.title + "', '" + todo.id + "', '" + todo.status + "');";
+        executeQuery(query);
     }
 
     @Override
     public Todo find(String id) {
+
+        String query = "SELECT * FROM todos WHERE id ='" + id + "';";
+
+        try (Connection connection = getConnection();
+             Statement statement =connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query);
+        ){
+            if (resultSet.next()){
+                Todo result = new Todo(resultSet.getString("title"),
+                        resultSet.getString("id"),
+                        Status.valueOf(resultSet.getString("status")));
+                return result;
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return null;
-    }
+   }
 
     @Override
     public void update(String id, String title) {
@@ -55,4 +83,23 @@ public class TodoDaoImplWithJdbc implements TodoDao {
     public List<Todo> all() {
         return null;
     }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                DATABASE,
+                DB_USER,
+                DB_PASSWORD);
+    }
+
+    private void executeQuery(String query) {
+        try (Connection connection = getConnection();
+             Statement statement =connection.createStatement();
+        ){
+            statement.execute(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
