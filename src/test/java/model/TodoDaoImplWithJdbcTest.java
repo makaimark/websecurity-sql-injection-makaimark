@@ -25,7 +25,7 @@ public class TodoDaoImplWithJdbcTest {
     }
 
     @Test
-    public void first() throws Exception {
+    public void find_shouldReturnAddedTodos() throws Exception {
         Todo originalTodo = Todo.create("whatever");
 
         dao.add(originalTodo);
