@@ -255,7 +255,39 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(activeTodo.title, activeTodoList.get(0).title);
     }
 
+    @Test
+    public void toggleAll_true_shouldToggleActiveToComplete() throws Exception {
+        dao.add(activeTodo);
 
+        dao.toggleAll(true);
 
+        assertEquals(Status.COMPLETE, dao.find(activeTodo.id).status);
+    }
 
+    @Test
+    public void toggleAll_true_shouldLeaveCompleteUntouched() throws Exception {
+        dao.add(completedTodo);
+
+        dao.toggleAll(true);
+
+        assertEquals(Status.COMPLETE, dao.find(completedTodo.id).status);
+    }
+
+    @Test
+    public void toggleAll_false_shouldLeaveActiveUntouched() throws Exception {
+        dao.add(activeTodo);
+
+        dao.toggleAll(false);
+
+        assertEquals(Status.ACTIVE, dao.find(activeTodo.id).status);
+    }
+
+    @Test
+    public void toggleAll_true_shouldToggleCompleteToActive() throws Exception {
+        dao.add(completedTodo);
+
+        dao.toggleAll(false);
+
+        assertEquals(Status.ACTIVE, dao.find(completedTodo.id).status);
+    }
 }

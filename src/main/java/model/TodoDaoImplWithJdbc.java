@@ -110,7 +110,9 @@ public class TodoDaoImplWithJdbc implements TodoDao {
 
     @Override
     public void toggleAll(boolean complete) {
-
+        Status newStatus = complete ? Status.COMPLETE : Status.ACTIVE;
+        String query = "UPDATE todos SET status = '" + newStatus + "';";
+        executeQuery(query);
     }
 
     @Override
