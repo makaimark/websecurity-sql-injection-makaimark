@@ -80,4 +80,27 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals("an other title", dao.find(todo.id).title);
     }
 
+    @org.junit.Test
+    public void remove_shouldRemoveTheTodoById() throws Exception {
+        Todo todo = Todo.create("whatever");
+        dao.add(todo);
+
+        dao.remove(todo.id);
+
+        assertEquals(0, dao.all().size());
+    }
+
+    @org.junit.Test
+    public void remove_shouldKeepOtherTodos() throws Exception {
+        Todo todoToRemove = Todo.create("todo to remove");
+        dao.add(todoToRemove);
+        Todo otherTodo = Todo.create("other");
+        dao.add(otherTodo);
+
+        dao.remove(todoToRemove.id);
+
+        List<Todo> allTodos = dao.all();
+        assertEquals(1, allTodos.size());
+        assertEquals(otherTodo.title, allTodos.get(0).title);
+    }
 }

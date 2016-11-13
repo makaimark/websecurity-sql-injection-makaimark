@@ -63,7 +63,8 @@ public class TodoDaoImplWithJdbc implements TodoDao {
 
     @Override
     public void remove(String id) {
-
+        String query = "DELETE FROM todos WHERE id = '" + id +"';";
+        executeQuery(query);
     }
 
     @Override
