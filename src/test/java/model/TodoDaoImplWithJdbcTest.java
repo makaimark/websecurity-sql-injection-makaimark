@@ -1,5 +1,6 @@
 package model;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -12,9 +13,16 @@ import static org.junit.Assert.*;
  */
 public class TodoDaoImplWithJdbcTest {
 
+
+    private TodoDaoImplWithJdbc dao;
+
+    @Before
+    public void setUp() throws Exception {
+        dao = new TodoDaoImplWithJdbc();
+    }
+
     @Test
     public void first() throws Exception {
-        TodoDaoImplWithJdbc dao = new TodoDaoImplWithJdbc();
         Todo originalTodo = Todo.create("whatever");
 
         dao.add(originalTodo);
@@ -25,7 +33,7 @@ public class TodoDaoImplWithJdbcTest {
 
     @Test
     public void find_forNonexistingId_shouldRetudnNull() throws Exception {
-        TodoDaoImplWithJdbc dao = new TodoDaoImplWithJdbc();
+        dao = new TodoDaoImplWithJdbc();
 
         Todo todoFromDao = dao.find("42");
 
