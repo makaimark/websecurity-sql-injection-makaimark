@@ -113,7 +113,7 @@ public class TodoDaoImplWithJdbcTest {
 
     @Test
     public void toggleStatus_whenGetActiveTodo_shouldCahngeStatusToCompleted() throws Exception {
-        Todo todo = Todo.create("whatever");   // status is ACTIVE for a brand new Todo
+        Todo todo = Todo.create("active todo");
         dao.add(todo);
 
         dao.toggleStatus(todo.id);
@@ -145,12 +145,57 @@ public class TodoDaoImplWithJdbcTest {
 
     @Test
     public void removeCompleted_shouldLeaveActive() throws Exception {
-        Todo todo = Todo.create("whatever");   // status is ACTIVE for a brand new Todo
+        Todo todo = Todo.create("active todo");
         dao.add(todo);
 
         dao.removeCompleted();
 
         assertEquals(1, dao.all().size());
     }
+
+    @org.junit.Test
+    public void ofStatusStatus_active_shouldReturnActive() throws Exception {
+        Todo activeTodo = Todo.create("active todo");
+        dao.add(activeTodo);
+
+        List<Todo> activeTodoList = dao.ofStatus(Status.ACTIVE);
+
+        assertEquals(1, activeTodoList.size());
+        assertEquals(activeTodo.title, activeTodoList.get(0).title);
+    }
+
+    @org.junit.Test
+    public void ofStatusStatus_active_shouldLeaveOutCompleted() throws Exception {
+        Todo completedTodo = Todo.create("whatever");
+        completedTodo.status = Status.COMPLETE;
+        dao.add(completedTodo);
+
+        List<Todo> activeTodoList = dao.ofStatus(Status.ACTIVE);
+
+        assertEquals(0, activeTodoList.size());
+    }
+
+    @org.junit.Test
+    public void ofStatusStatus_complete_shouldReturnComplete() throws Exception {
+        Todo completedTodo = Todo.create("completed todo");
+        completedTodo.status = Status.COMPLETE;
+        dao.add(completedTodo);
+
+        List<Todo> completedTodoList = dao.ofStatus(Status.COMPLETE);
+
+        assertEquals(1, completedTodoList.size());
+        assertEquals(completedTodo.title, completedTodoList.get(0).title);
+    }
+
+    @org.junit.Test
+    public void ofStatusStatus_complete_shouldLeaveOutActive() throws Exception {
+        Todo activeTodo = Todo.create("whatever");
+        dao.add(activeTodo);
+
+        List<Todo> completedTodoList = dao.ofStatus(Status.COMPLETE);
+
+        assertEquals(0, completedTodoList.size());
+    }
+
 
 }
