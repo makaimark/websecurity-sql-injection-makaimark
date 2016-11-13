@@ -140,7 +140,8 @@ public class TodoDaoImplWithJdbc implements TodoDao {
         return resultList;
     }
 
-    public void deleteAll() {
+    // package private so test can see it, but TodoList not
+    void deleteAll() {
         String query = "DELETE FROM todos;";
         executeQuery(query);
     }
