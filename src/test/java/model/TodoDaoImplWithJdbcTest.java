@@ -189,12 +189,12 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(0, completedTodoList.size());
     }
 
-    // Hehe, cannot call with 'null',
-    // as compiled cannot decide which ofStatus.
-    // Left here only for documentation purpose.
     @Ignore
     @Test
     public void ofStatusString_whenGetsNull_heheCannotCallWithNull() throws Exception {
+        // Hehe, cannot call with 'null',
+        // as compiled cannot decide which ofStatus.
+        // Left here only for documentation purpose.
     }
 
     @Test
