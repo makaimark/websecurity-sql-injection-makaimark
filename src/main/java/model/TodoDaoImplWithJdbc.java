@@ -84,6 +84,11 @@ public class TodoDaoImplWithJdbc implements TodoDao {
         return null;
     }
 
+    public void deleteAll() {
+        String query = "DELETE FROM todos;";
+        executeQuery(query);
+    }
+
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
                 DATABASE,

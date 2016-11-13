@@ -3,6 +3,8 @@ package model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -19,6 +21,7 @@ public class TodoDaoImplWithJdbcTest {
     @Before
     public void setUp() throws Exception {
         dao = new TodoDaoImplWithJdbc();
+        dao.deleteAll();
     }
 
     @Test
@@ -38,6 +41,19 @@ public class TodoDaoImplWithJdbcTest {
         Todo todoFromDao = dao.find("42");
 
         assertNull(todoFromDao);
+    }
+
+    @org.junit.Test
+    public void deleteAll_shoudClearAllTodos() throws Exception {
+        Todo firstTodo = Todo.create("first");
+        Todo secondTodo = Todo.create("second");
+        dao.add(firstTodo);
+        dao.add(secondTodo);
+
+        dao.deleteAll();
+
+        assertNull(dao.find(firstTodo.id));
+        assertNull(dao.find(secondTodo.id));
     }
 
 
