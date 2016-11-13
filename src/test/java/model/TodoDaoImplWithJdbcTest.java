@@ -22,4 +22,16 @@ public class TodoDaoImplWithJdbcTest {
 
         assertEquals(originalTodo, todoFromDao);
     }
+
+    @Test
+    public void find_forNonexistingId_shouldRetudnNull() throws Exception {
+        TodoDaoImplWithJdbc dao = new TodoDaoImplWithJdbc();
+
+        Todo todoFromDao = dao.find("42");
+
+        assertNull(todoFromDao);
+    }
+
+
+
 }
