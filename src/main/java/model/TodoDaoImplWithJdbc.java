@@ -47,7 +47,8 @@ public class TodoDaoImplWithJdbc implements TodoDao {
 
     @Override
     public void update(String id, String title) {
-
+        String query = "UPDATE todos SET title = '" + title + "' WHERE id = '" + id + "';";
+        executeQuery(query);
     }
 
     @Override

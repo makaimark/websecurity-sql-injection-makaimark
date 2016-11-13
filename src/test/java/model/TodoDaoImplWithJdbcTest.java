@@ -70,6 +70,14 @@ public class TodoDaoImplWithJdbcTest {
         assertTrue(todos.contains(secondTodo));
     }
 
+    @org.junit.Test
+    public void update_shouldChangeTheTitle() throws Exception {
+        Todo todo = Todo.create("whatever");
+        dao.add(todo);
 
+        dao.update(todo.id, "an other title");
+
+        assertEquals("an other title", dao.find(todo.id).title);
+    }
 
 }
