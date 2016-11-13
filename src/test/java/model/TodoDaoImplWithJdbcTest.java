@@ -43,7 +43,7 @@ public class TodoDaoImplWithJdbcTest {
         assertNull(todoFromDao);
     }
 
-    @org.junit.Test
+    @Test
     public void deleteAll_shoudClearAllTodos() throws Exception {
         Todo firstTodo = Todo.create("first");
         Todo secondTodo = Todo.create("second");
@@ -56,7 +56,7 @@ public class TodoDaoImplWithJdbcTest {
         assertNull(dao.find(secondTodo.id));
     }
 
-    @org.junit.Test
+    @Test
     public void all_shoudReturnAllTodos() throws Exception {
         Todo firstTodo = Todo.create("first");
         Todo secondTodo = Todo.create("second");
@@ -70,7 +70,7 @@ public class TodoDaoImplWithJdbcTest {
         assertTrue(todos.contains(secondTodo));
     }
 
-    @org.junit.Test
+    @Test
     public void update_shouldChangeTheTitle() throws Exception {
         Todo todo = Todo.create("whatever");
         dao.add(todo);
@@ -80,7 +80,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals("an other title", dao.find(todo.id).title);
     }
 
-    @org.junit.Test
+    @Test
     public void remove_shouldRemoveTheTodoById() throws Exception {
         Todo todo = Todo.create("whatever");
         dao.add(todo);
@@ -90,7 +90,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(0, dao.all().size());
     }
 
-    @org.junit.Test
+    @Test
     public void remove_shouldKeepOtherTodos() throws Exception {
         Todo todoToRemove = Todo.create("todo to remove");
         dao.add(todoToRemove);
@@ -104,14 +104,14 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(otherTodo.title, allTodos.get(0).title);
     }
 
-    @org.junit.Test
+    @Test
     public void toggleStatus_whenGetNonexistingId_shouldDoNothing() throws Exception {
         dao.toggleStatus("42");
 
         assertEquals(0, dao.all().size());
     }
 
-    @org.junit.Test
+    @Test
     public void toggleStatus_whenGetActiveTodo_shouldCahngeStatusToCompleted() throws Exception {
         Todo todo = Todo.create("whatever");   // status is ACTIVE for a brand new Todo
         dao.add(todo);
@@ -121,7 +121,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(Status.COMPLETE, dao.find(todo.id).status);
     }
 
-    @org.junit.Test
+    @Test
     public void toggleStatus_whenGetCompletedTodo_shouldChangeStatusToActive() throws Exception {
         Todo todo = Todo.create("whatever");
         todo.status = Status.COMPLETE;
@@ -132,7 +132,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(Status.ACTIVE, dao.find(todo.id).status);
     }
 
-    @org.junit.Test
+    @Test
     public void removeCompleted_shouldRemoveCompleted() throws Exception {
         Todo todo = Todo.create("whatever");
         todo.status = Status.COMPLETE;
@@ -143,7 +143,7 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(0, dao.all().size());
     }
 
-    @org.junit.Test
+    @Test
     public void removeCompleted_shouldLeaveActive() throws Exception {
         Todo todo = Todo.create("whatever");   // status is ACTIVE for a brand new Todo
         dao.add(todo);
