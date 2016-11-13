@@ -103,4 +103,33 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(1, allTodos.size());
         assertEquals(otherTodo.title, allTodos.get(0).title);
     }
+
+    @org.junit.Test
+    public void toggleStatus_whenGetNonexistingId_shouldDoNothing() throws Exception {
+        dao.toggleStatus("42");
+
+        assertEquals(0, dao.all().size());
+    }
+
+    @org.junit.Test
+    public void toggleStatus_whenGetActiveTodo_shouldCahngeStatusToCompleted() throws Exception {
+        Todo todo = Todo.create("whatever");   // status is ACTIVE for a brand new Todo
+        dao.add(todo);
+
+        dao.toggleStatus(todo.id);
+
+        assertEquals(Status.COMPLETE, dao.find(todo.id).status);
+    }
+
+    @org.junit.Test
+    public void toggleStatus_whenGetCompletedTodo_shouldChangeStatusToActive() throws Exception {
+        Todo todo = Todo.create("whatever");
+        todo.status = Status.COMPLETE;
+        dao.add(todo);
+
+        dao.toggleStatus(todo.id);
+
+        assertEquals(Status.ACTIVE, dao.find(todo.id).status);
+    }
+
 }

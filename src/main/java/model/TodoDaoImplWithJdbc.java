@@ -74,6 +74,15 @@ public class TodoDaoImplWithJdbc implements TodoDao {
 
     @Override
     public void toggleStatus(String id) {
+        Todo todo = find(id);
+
+        if (null == todo) {
+            return;
+        }
+
+        Status newStatus = (todo.status == Status.ACTIVE) ? Status.COMPLETE : Status.ACTIVE;
+        String query = "UPDATE todos SET status = '" + newStatus + "' WHERE id = '" + id + "';";
+        executeQuery(query);
 
     }
 
