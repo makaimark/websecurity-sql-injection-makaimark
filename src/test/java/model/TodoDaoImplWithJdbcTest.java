@@ -132,4 +132,25 @@ public class TodoDaoImplWithJdbcTest {
         assertEquals(Status.ACTIVE, dao.find(todo.id).status);
     }
 
+    @org.junit.Test
+    public void removeCompleted_shouldRemoveCompleted() throws Exception {
+        Todo todo = Todo.create("whatever");
+        todo.status = Status.COMPLETE;
+        dao.add(todo);
+
+        dao.removeCompleted();
+
+        assertEquals(0, dao.all().size());
+    }
+
+    @org.junit.Test
+    public void removeCompleted_shouldLeaveActive() throws Exception {
+        Todo todo = Todo.create("whatever");   // status is ACTIVE for a brand new Todo
+        dao.add(todo);
+
+        dao.removeCompleted();
+
+        assertEquals(1, dao.all().size());
+    }
+
 }

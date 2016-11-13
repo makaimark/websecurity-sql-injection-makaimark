@@ -69,7 +69,8 @@ public class TodoDaoImplWithJdbc implements TodoDao {
 
     @Override
     public void removeCompleted() {
-
+        String query = "DELETE FROM todos WHERE status = '" + Status.COMPLETE +"';";
+        executeQuery(query);
     }
 
     @Override
