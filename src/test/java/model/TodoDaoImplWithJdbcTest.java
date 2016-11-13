@@ -17,27 +17,29 @@ public class TodoDaoImplWithJdbcTest {
 
 
     private TodoDaoImplWithJdbc dao;
+    private Todo activeTodo;
+    private Todo completedTodo;
 
     @Before
     public void setUp() throws Exception {
         dao = new TodoDaoImplWithJdbc();
         dao.deleteAll();
+
+        activeTodo = Todo.create("active todo");
+        completedTodo = Todo.create("completed todo");
+        completedTodo.status = Status.COMPLETE;
     }
 
     @Test
     public void find_shouldReturnAddedTodos() throws Exception {
-        Todo originalTodo = Todo.create("whatever");
+        dao.add(activeTodo);
+        Todo todoFromDao = dao.find(activeTodo.id);
 
-        dao.add(originalTodo);
-        Todo todoFromDao = dao.find(originalTodo.id);
-
-        assertEquals(originalTodo, todoFromDao);
+        assertEquals(activeTodo, todoFromDao);
     }
 
     @Test
     public void find_forNonexistingId_shouldRetudnNull() throws Exception {
-        dao = new TodoDaoImplWithJdbc();
-
         Todo todoFromDao = dao.find("42");
 
         assertNull(todoFromDao);
@@ -82,10 +84,9 @@ public class TodoDaoImplWithJdbcTest {
 
     @Test
     public void remove_shouldRemoveTheTodoById() throws Exception {
-        Todo todo = Todo.create("whatever");
-        dao.add(todo);
+        dao.add(activeTodo);
 
-        dao.remove(todo.id);
+        dao.remove(activeTodo.id);
 
         assertEquals(0, dao.all().size());
     }
@@ -113,23 +114,20 @@ public class TodoDaoImplWithJdbcTest {
 
     @Test
     public void toggleStatus_whenGetActiveTodo_shouldCahngeStatusToCompleted() throws Exception {
-        Todo todo = Todo.create("active todo");
-        dao.add(todo);
+        dao.add(activeTodo);
 
-        dao.toggleStatus(todo.id);
+        dao.toggleStatus(activeTodo.id);
 
-        assertEquals(Status.COMPLETE, dao.find(todo.id).status);
+        assertEquals(Status.COMPLETE, dao.find(activeTodo.id).status);
     }
 
     @Test
     public void toggleStatus_whenGetCompletedTodo_shouldChangeStatusToActive() throws Exception {
-        Todo todo = Todo.create("whatever");
-        todo.status = Status.COMPLETE;
-        dao.add(todo);
+        dao.add(completedTodo);
 
-        dao.toggleStatus(todo.id);
+        dao.toggleStatus(completedTodo.id);
 
-        assertEquals(Status.ACTIVE, dao.find(todo.id).status);
+        assertEquals(Status.ACTIVE, dao.find(completedTodo.id).status);
     }
 
     @Test
@@ -145,8 +143,7 @@ public class TodoDaoImplWithJdbcTest {
 
     @Test
     public void removeCompleted_shouldLeaveActive() throws Exception {
-        Todo todo = Todo.create("active todo");
-        dao.add(todo);
+        dao.add(activeTodo);
 
         dao.removeCompleted();
 
@@ -155,7 +152,6 @@ public class TodoDaoImplWithJdbcTest {
 
     @org.junit.Test
     public void ofStatusStatus_active_shouldReturnActive() throws Exception {
-        Todo activeTodo = Todo.create("active todo");
         dao.add(activeTodo);
 
         List<Todo> activeTodoList = dao.ofStatus(Status.ACTIVE);
@@ -166,8 +162,6 @@ public class TodoDaoImplWithJdbcTest {
 
     @org.junit.Test
     public void ofStatusStatus_active_shouldLeaveOutCompleted() throws Exception {
-        Todo completedTodo = Todo.create("whatever");
-        completedTodo.status = Status.COMPLETE;
         dao.add(completedTodo);
 
         List<Todo> activeTodoList = dao.ofStatus(Status.ACTIVE);
@@ -177,8 +171,6 @@ public class TodoDaoImplWithJdbcTest {
 
     @org.junit.Test
     public void ofStatusStatus_complete_shouldReturnComplete() throws Exception {
-        Todo completedTodo = Todo.create("completed todo");
-        completedTodo.status = Status.COMPLETE;
         dao.add(completedTodo);
 
         List<Todo> completedTodoList = dao.ofStatus(Status.COMPLETE);
@@ -189,7 +181,6 @@ public class TodoDaoImplWithJdbcTest {
 
     @org.junit.Test
     public void ofStatusStatus_complete_shouldLeaveOutActive() throws Exception {
-        Todo activeTodo = Todo.create("whatever");
         dao.add(activeTodo);
 
         List<Todo> completedTodoList = dao.ofStatus(Status.COMPLETE);
