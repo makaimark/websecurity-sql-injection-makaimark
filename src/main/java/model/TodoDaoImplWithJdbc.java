@@ -9,16 +9,21 @@ import java.util.List;
  */
 public class TodoDaoImplWithJdbc implements TodoDao {
 
-    private static final String DATABASE = "jdbc:postgresql://localhost:5432/todolist";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "postgres";
+    private static final String DATABASE = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_USER = "makaimark";
+    private static final String DB_PASSWORD = "920410";
 
     @Override
     public void add(Todo todo) {
         String query = "INSERT INTO todos (title, id, status) " +
-                "VALUES ('" + todo.title + "', '" + todo.id + "', '" + todo.status + "');";
+                "VALUES ('" + prevent_injection(todo.title) + "', '" + todo.id + "', '" + todo.status + "');";
         executeQuery(query);
     }
+
+    private String prevent_injection(String value) {
+        return value.replace('"', '`').replace('\'', '`').replace(';', ',');
+    }
+
 
     @Override
     public Todo find(String id) {
